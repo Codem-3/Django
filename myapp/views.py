@@ -1,9 +1,324 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseServerError
 from django.views.decorators.csrf import csrf_protect
 from django.middleware.csrf import get_token
 
 # Create your views here.
+
+
+def handler404(request, exception):
+    return HttpResponseNotFound(
+        """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Page Not Found - 404</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            body::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: 
+                    radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+                pointer-events: none;
+            }
+            
+            .container {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-radius: 20px;
+                padding: 3rem;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                max-width: 600px;
+                width: 90%;
+                position: relative;
+                z-index: 1;
+                animation: slideUp 0.8s ease-out;
+            }
+            
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .error-code {
+                font-size: 8rem;
+                font-weight: bold;
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                line-height: 1;
+                margin-bottom: 1rem;
+                animation: bounce 2s infinite;
+            }
+            
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% {
+                    transform: translateY(0);
+                }
+                40% {
+                    transform: translateY(-10px);
+                }
+                60% {
+                    transform: translateY(-5px);
+                }
+            }
+            
+            h1 {
+                color: #333;
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            
+            p {
+                color: #666;
+                font-size: 1.2rem;
+                margin-bottom: 2rem;
+                line-height: 1.6;
+            }
+            
+            .home-btn {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+                color: white;
+                text-decoration: none;
+                padding: 1rem 2.5rem;
+                border-radius: 50px;
+                font-size: 1.1rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            
+            .home-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            }
+            
+            .emoji {
+                font-size: 3rem;
+                margin: 1rem 0;
+                display: block;
+                animation: wiggle 2s ease-in-out infinite;
+            }
+            
+            @keyframes wiggle {
+                0%, 7% {
+                    transform: rotateZ(0);
+                }
+                15% {
+                    transform: rotateZ(-15deg);
+                }
+                20% {
+                    transform: rotateZ(10deg);
+                }
+                25% {
+                    transform: rotateZ(-10deg);
+                }
+                30% {
+                    transform: rotateZ(6deg);
+                }
+                35% {
+                    transform: rotateZ(-4deg);
+                }
+                40%, 100% {
+                    transform: rotateZ(0);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="error-code">404</div>
+            <span class="emoji">🤔</span>
+            <h1>Oops! Page Not Found</h1>
+            <p>The page you're looking for seems to have wandered off into the digital wilderness.</p>
+            <a href="/" class="home-btn">Take Me Home 🏠</a>
+        </div>
+    </body>
+    </html>
+    """
+    )
+
+
+def handler500(request):
+    return HttpResponseServerError(
+        """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Server Error - 500</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            body::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: 
+                    radial-gradient(circle at 20% 80%, rgba(231, 76, 60, 0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+                pointer-events: none;
+            }
+            
+            .container {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-radius: 20px;
+                padding: 3rem;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                max-width: 600px;
+                width: 90%;
+                position: relative;
+                z-index: 1;
+                animation: slideUp 0.8s ease-out;
+            }
+            
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .error-code {
+                font-size: 8rem;
+                font-weight: bold;
+                background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                line-height: 1;
+                margin-bottom: 1rem;
+                animation: shake 1s ease-in-out infinite;
+            }
+            
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+                20%, 40%, 60%, 80% { transform: translateX(3px); }
+            }
+            
+            h1 {
+                color: #333;
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            
+            p {
+                color: #666;
+                font-size: 1.2rem;
+                margin-bottom: 2rem;
+                line-height: 1.6;
+            }
+            
+            .home-btn {
+                display: inline-block;
+                background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                color: white;
+                text-decoration: none;
+                padding: 1rem 2.5rem;
+                border-radius: 50px;
+                font-size: 1.1rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            
+            .home-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            }
+            
+            .emoji {
+                font-size: 3rem;
+                margin: 1rem 0;
+                display: block;
+                animation: pulse 2s ease-in-out infinite;
+            }
+            
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="error-code">500</div>
+            <span class="emoji">⚠️</span>
+            <h1>Internal Server Error</h1>
+            <p>Something went wrong on our end. Our team has been notified and is working to fix this issue.</p>
+            <a href="/" class="home-btn">Go Back Home 🏠</a>
+        </div>
+    </body>
+    </html>
+    """
+    )
 
 
 @csrf_protect
