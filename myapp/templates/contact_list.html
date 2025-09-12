@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Submissions</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+        padding: 2rem 0;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(76, 175, 80, 0.3) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 40%,
+            rgba(76, 175, 80, 0.2) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        animation: slideDown 0.8s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        animation: fadeIn 1s ease-out 0.2s both;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .back-link {
+        display: inline-block;
+        background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        color: white;
+        text-decoration: none;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        animation: fadeInUp 1s ease-out 0.4s both;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .back-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+      }
+
+      .table-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        animation: slideUp 0.8s ease-out 0.2s both;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      th {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        color: #333;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1.2rem;
+        text-align: left;
+        border: none;
+        font-size: 0.9rem;
+      }
+
+      th:first-child {
+        border-top-left-radius: 15px;
+      }
+
+      th:last-child {
+        border-top-right-radius: 15px;
+      }
+
+      td {
+        padding: 1.2rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      tr {
+        transition: all 0.3s ease;
+      }
+
+      tr:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(76, 175, 80, 0.05) 0%,
+          rgba(69, 160, 73, 0.05) 100%
+        );
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.1);
+      }
+
+      tr:last-child td:first-child {
+        border-bottom-left-radius: 15px;
+      }
+
+      tr:last-child td:last-child {
+        border-bottom-right-radius: 15px;
+      }
+
+      .shift-badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .shift-morning {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+      }
+
+      .shift-afternoon {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        color: white;
+      }
+
+      .shift-evening {
+        background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+        color: white;
+      }
+
+      .no-data {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #666;
+        animation: fadeIn 1s ease-out 0.4s both;
+      }
+
+      .no-data h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #4caf50;
+      }
+
+      .no-data p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .no-data a {
+        display: inline-block;
+        background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        color: white;
+        text-decoration: none;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+      }
+
+      .no-data a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+      }
+
+      .feedback-cell {
+        max-width: 250px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        position: relative;
+      }
+
+      .feedback-cell:hover {
+        white-space: normal;
+        overflow: visible;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        z-index: 10;
+        position: relative;
+      }
+
+      .id-badge {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        padding: 0.3rem 0.6rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .date-text {
+        color: #666;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .email-text {
+        color: #4caf50;
+        font-weight: 500;
+      }
+
+      .name-text {
+        font-weight: 600;
+        color: #333;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 1rem;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        .table-container {
+          overflow-x: auto;
+          padding: 1rem;
+        }
+
+        th,
+        td {
+          padding: 0.8rem;
+          font-size: 0.9rem;
+        }
+
+        .feedback-cell {
+          max-width: 150px;
+        }
+      }
+
+      /* Decorative floating elements */
+      .decorative-element {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(
+          45deg,
+          rgba(76, 175, 80, 0.1),
+          rgba(69, 160, 73, 0.1)
+        );
+        animation: float 4s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      .decorative-element:nth-child(1) {
+        top: 15%;
+        left: 5%;
+        animation-delay: 0s;
+      }
+
+      .decorative-element:nth-child(2) {
+        top: 60%;
+        right: 5%;
+        animation-delay: 2s;
+      }
+
+      .decorative-element:nth-child(3) {
+        bottom: 20%;
+        left: 10%;
+        animation-delay: 1s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="decorative-element"></div>
+    <div class="decorative-element"></div>
+    <div class="decorative-element"></div>
+
+    <div class="container">
+      <div class="header">
+        <h1>📋 Contact Submissions</h1>
+        <a href="{% url 'contact' %}" class="back-link"
+          >← Back to Contact Form</a
+        >
+      </div>
+
+      {% if contacts %}
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Shift</th>
+              <th>Time Log</th>
+              <th>Feedback</th>
+              <th>Submitted</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for contact in contacts %}
+            <tr>
+              <td><span class="id-badge">#{{ contact.id }}</span></td>
+              <td class="name-text">
+                {{ contact.first_name }} {{ contact.last_name }}
+              </td>
+              <td class="email-text">{{ contact.email }}</td>
+              <td>
+                <span class="shift-badge shift-{{ contact.shift }}">
+                  {{ contact.get_shift_display }}
+                </span>
+              </td>
+              <td class="date-text">
+                {{ contact.time_log|date:"M d, Y H:i" }}
+              </td>
+              <td class="feedback-cell" title="{{ contact.feedback }}">
+                {{ contact.feedback|truncatechars:50 }}
+              </td>
+              <td class="date-text">
+                {{ contact.created_at|date:"M d, Y H:i" }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="table-container">
+        <div class="no-data">
+          <h2>📝 No Submissions Yet</h2>
+          <p>Looks like no one has filled out the contact form yet.</p>
+          <p>Be the first to share your thoughts!</p>
+          <a href="{% url 'contact' %}">Submit First Contact Form 🚀</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

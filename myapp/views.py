@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseServerError
 from django.views.decorators.csrf import csrf_protect
 from django.middleware.csrf import get_token
+from django.contrib import messages
+from .forms import InputForm
+from .models import Contact
 
 # Create your views here.
 
@@ -574,12 +577,12 @@ def home(request):
         <div class="decorative-element"></div>
         
         <div class="container">
-            <h1>Hello World! 🐍</h1>
+    <h1>Hello World! 🐍</h1>
             <p>Welcome to our Django application!</p>
             
             <div class="nav-links">
-                <a href="/about/">About</a>
-                <a href="/contact/">Contact</a>
+    <a href="/about/">About</a>
+    <a href="/contact/">Contact</a>
             </div>
 
             <form action="/" method="post">
@@ -588,7 +591,7 @@ def home(request):
                     <input type="text" name="name" placeholder="Enter your name" required>
                 </div>
                 <button type="submit">Get Started ✨</button>
-            </form>
+    </form>
         </div>
     </body>
     </html>
@@ -601,7 +604,49 @@ def about(request):
 
 
 def contact(request):
-    return HttpResponse("This is the contact page.")
+    if request.method == "POST":
+        form = InputForm(request.POST)
+        if form.is_valid():
+            # Process the form data
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
+            email = form.cleaned_data["email"]
+            shift = form.cleaned_data["shift"]
+            time_log = form.cleaned_data["time_log"]
+            feedback = form.cleaned_data["feedback"]
+
+            # Save to database
+            contact = Contact.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                shift=shift,
+                time_log=time_log,
+                feedback=feedback,
+            )
+
+            messages.success(
+                request,
+                f"Thank you {first_name}! Your form has been submitted successfully.",
+            )
+            return redirect("contact")  # Redirect to prevent re-submission
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = InputForm()
+
+    context = {
+        "form": form,
+    }
+    return render(request, "contact.html", context)
+
+
+def contact_list(request):
+    contacts = Contact.objects.all().order_by("-created_at")
+    context = {
+        "contacts": contacts,
+    }
+    return render(request, "contact_list.html", context)
 
 
 def name(request, name):
