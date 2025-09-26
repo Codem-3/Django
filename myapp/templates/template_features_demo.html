@@ -1,0 +1,400 @@
+{% extends 'base.html' %} {% block title %}Template Features Demo - {{
+block.super }}{% endblock %} {% block page_title %}Dynamic Template Features
+Demo{% endblock %} {% block page_description %}Comprehensive examples of Django
+template variables, filters, tags, and logic{% endblock %} {% block
+breadcrumb_items %}
+<li class="breadcrumb-item active">Template Features</li>
+{% endblock %} {% block content %}
+
+<!-- Template Variables Section -->
+<div class="template-example mb-5">
+  <h2>1. Template Variables & Filters</h2>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>Basic Variables and Object Access</h5>
+    </div>
+    <div class="card-body">
+      <p><strong>Simple variable:</strong> {{ demo_title }}</p>
+      <p>
+        <strong>Object attribute:</strong> {{ user.username|default:"Anonymous
+        User" }}
+      </p>
+      <p>
+        <strong>Dictionary access:</strong> {{ user_data.role|default:"No role
+        assigned" }}
+      </p>
+      <p>
+        <strong>List access:</strong> {{ sample_list.0|default:"Empty list" }}
+      </p>
+      <p>
+        <strong>Method call:</strong> {{ current_time|date:"F d, Y g:i A" }}
+      </p>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>Common Filters Demonstration</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <ul class="list-unstyled">
+            <li><strong>Upper case:</strong> {{ demo_text|upper }}</li>
+            <li><strong>Lower case:</strong> {{ demo_text|lower }}</li>
+            <li><strong>Title case:</strong> {{ demo_text|title }}</li>
+            <li>
+              <strong>Truncate words:</strong> {{ long_text|truncatewords:5 }}
+            </li>
+            <li><strong>Length:</strong> {{ sample_list|length }} items</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul class="list-unstyled">
+            <li>
+              <strong>Default value:</strong> {{ empty_var|default:"No value
+              provided" }}
+            </li>
+            <li><strong>Float format:</strong> {{ price|floatformat:2 }}</li>
+            <li><strong>Add value:</strong> {{ count|add:10 }}</li>
+            <li>
+              <strong>Slice:</strong> {{ sample_list|slice:":3"|join:", " }}
+            </li>
+            <li><strong>Random:</strong> {{ sample_list|random }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>Chained Filters</h5>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>Multiple filters:</strong> {{ long_text|truncatewords:8|upper }}
+      </p>
+      <p>
+        <strong>Date formatting:</strong> {{ current_time|date:"l, F j, Y"|upper
+        }}
+      </p>
+      <p><strong>Safe HTML:</strong> {{ html_content|safe }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- Conditional Rendering Section -->
+<div class="template-example mb-5">
+  <h2>2. Conditional Rendering</h2>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>Basic Conditionals</h5>
+    </div>
+    <div class="card-body">
+      {% if user.is_authenticated %}
+      <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i> User is authenticated:
+        <strong>{{ user.username }}</strong>
+      </div>
+      {% else %}
+      <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i> User is not authenticated
+      </div>
+      {% endif %} {% if count > 10 %}
+      <p class="text-success">Count is high: {{ count }}</p>
+      {% elif count > 5 %}
+      <p class="text-warning">Count is medium: {{ count }}</p>
+      {% else %}
+      <p class="text-danger">Count is low: {{ count }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>Complex Conditionals</h5>
+    </div>
+    <div class="card-body">
+      {% if user.is_authenticated and user.is_staff %}
+      <div class="alert alert-info">
+        <i class="fas fa-crown"></i> You have admin privileges
+        <a href="/admin/" class="btn btn-sm btn-primary ms-2">Admin Panel</a>
+      </div>
+      {% elif user.is_authenticated and not user.is_staff %}
+      <div class="alert alert-secondary">
+        <i class="fas fa-user"></i> You are a regular user
+      </div>
+      {% endif %} {% ifequal demo_status "active" %}
+      <span class="badge bg-success">Status: Active</span>
+      {% endifequal %} {% ifnotequal demo_status "inactive" %}
+      <span class="badge bg-primary ms-2">Not Inactive</span>
+      {% endifnotequal %}
+    </div>
+  </div>
+</div>
+
+<!-- Loops and Iteration Section -->
+<div class="template-example mb-5">
+  <h2>3. Loops and Iteration</h2>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>Basic For Loop</h5>
+    </div>
+    <div class="card-body">
+      <h6>Sample Items List:</h6>
+      <ul class="list-group">
+        {% for item in sample_list %}
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
+          {{ item }}
+          <span class="badge bg-primary rounded-pill"
+            >Item #{{ forloop.counter }}</span
+          >
+        </li>
+        {% empty %}
+        <li class="list-group-item text-muted">No items in the list</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>Advanced For Loop with Loop Variables</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>Item</th>
+              <th>Loop Info</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in sample_list %}
+            <tr
+              class="{% if forloop.first %}table-success{% elif forloop.last %}table-warning{% endif %}"
+            >
+              <td>{{ forloop.counter }} of {{ forloop.revcounter }}</td>
+              <td>{{ item|title }}</td>
+              <td>
+                <small class="text-muted">
+                  {% if forloop.first %}First{% endif %} {% if forloop.last
+                  %}Last{% endif %} ({{ forloop.counter0 }}-indexed)
+                </small>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>Nested Loops</h5>
+    </div>
+    <div class="card-body">
+      {% for category in categories %}
+      <div class="mb-3">
+        <h6 class="text-primary">
+          {{ category.name }} ({{ category.items|length }} items)
+        </h6>
+        {% for item in category.items %}
+        <span class="badge bg-light text-dark me-1">
+          {{ forloop.parentloop.counter }}.{{ forloop.counter }} {{ item }}
+        </span>
+        {% empty %}
+        <span class="text-muted">No items in this category</span>
+        {% endfor %}
+      </div>
+      {% empty %}
+      <p class="text-muted">No categories available</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Template Includes Section -->
+<div class="template-example mb-5">
+  <h2>4. Template Includes</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <h5>Including Partial Templates</h5>
+    </div>
+    <div class="card-body">
+      <p>The following card is included from a separate template file:</p>
+
+      <!-- Include a partial template -->
+      {% include '_sample_card.html' with title="Included Template"
+      content="This content comes from _sample_card.html" %}
+
+      <!-- Include with different context -->
+      {% include '_sample_card.html' with title="Another Include" content="Same
+      template, different data" %}
+    </div>
+  </div>
+</div>
+
+<!-- URL Generation Section -->
+<div class="template-example mb-5">
+  <h2>5. URL Generation and Links</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <h5>Dynamic URL Generation</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Basic URLs</h6>
+          <ul class="list-unstyled">
+            <li>
+              <a
+                href="{% url 'contact_list' %}"
+                class="btn btn-outline-primary btn-sm"
+                >Contact List</a
+              >
+            </li>
+            <li class="mt-2">
+              <!-- URL with parameters would look like this: -->
+              <!-- <a href="{% url 'contact_detail' contact.id %}">Contact Detail</a> -->
+              <code>{% url 'contact_detail' contact.id %}</code>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h6>URLs with Query Parameters</h6>
+          <div class="code-snippet">
+            <code>
+              &lt;a href="{% url 'contact_list' %}?search={{ search_term
+              }}"&gt;<br />
+              &nbsp;&nbsp;Search Results<br />
+              &lt;/a&gt;
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Current Time and Date Section -->
+<div class="template-example mb-5">
+  <h2>6. Time and Date Display</h2>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Current Date/Time Formats</h6>
+          <ul class="list-unstyled">
+            <li><strong>Default:</strong> {% now "DATETIME_FORMAT" %}</li>
+            <li><strong>Custom:</strong> {% now "l, F j, Y" %}</li>
+            <li><strong>Short date:</strong> {% now "M j, Y" %}</li>
+            <li><strong>Time only:</strong> {% now "g:i A" %}</li>
+            <li><strong>ISO format:</strong> {% now "c" %}</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h6>Date Variable Formatting</h6>
+          <ul class="list-unstyled">
+            <li>
+              <strong>Full date:</strong> {{ current_time|date:"F d, Y" }}
+            </li>
+            <li><strong>Time ago:</strong> {{ current_time|timesince }} ago</li>
+            <li><strong>Time until:</strong> {{ future_time|timeuntil }}</li>
+            <li><strong>Weekday:</strong> {{ current_time|date:"l" }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Data Summary Section -->
+<div class="template-example mb-5">
+  <h2>7. Template Context Summary</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <h5>Variables Available in This Template</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>String Variables</h6>
+          <ul class="list-unstyled">
+            <li><code>demo_title</code>: "{{ demo_title }}"</li>
+            <li>
+              <code>demo_text</code>: "{{ demo_text|truncatechars:30 }}..."
+            </li>
+            <li><code>demo_status</code>: "{{ demo_status }}"</li>
+          </ul>
+
+          <h6 class="mt-3">Numeric Variables</h6>
+          <ul class="list-unstyled">
+            <li><code>count</code>: {{ count }}</li>
+            <li><code>price</code>: ${{ price|floatformat:2 }}</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h6>List Variables</h6>
+          <ul class="list-unstyled">
+            <li><code>sample_list</code>: {{ sample_list|length }} items</li>
+            <li><code>categories</code>: {{ categories|length }} categories</li>
+          </ul>
+
+          <h6 class="mt-3">Time Variables</h6>
+          <ul class="list-unstyled">
+            <li>
+              <code>current_time</code>: {{ current_time|date:"Y-m-d H:i:s" }}
+            </li>
+            <li>
+              <code>future_time</code>: {{ future_time|date:"Y-m-d H:i:s" }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block extra_css %} {{ block.super }}
+<style>
+  .template-example {
+    border-left: 4px solid #28a745;
+    padding-left: 20px;
+  }
+  .code-snippet code {
+    color: #e83e8c;
+    font-size: 0.9em;
+  }
+  .table th {
+    border-top: none;
+  }
+</style>
+{% endblock %} {% block extra_js %} {{ block.super }}
+<script>
+  console.log("Template features demo loaded");
+
+  // Add some interactivity
+  document.querySelectorAll(".badge").forEach((badge) => {
+    badge.addEventListener("click", function () {
+      this.style.transform = "scale(1.1)";
+      setTimeout(() => {
+        this.style.transform = "scale(1)";
+      }, 200);
+    });
+  });
+</script>
+{% endblock %}

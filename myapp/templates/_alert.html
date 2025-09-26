@@ -1,0 +1,17 @@
+<!-- Alert component for custom template tag -->
+<div
+  class="alert {{ alert_class }}{% if dismissible %} alert-dismissible fade show{% endif %}"
+  role="alert"
+>
+  {% if icon_map and alert_class %} {% for alert_type, icon_class in
+  icon_map.items %} {% if alert_class|slice:"6:" == alert_type %}
+  <i class="fas {{ icon_class }} me-2"></i>
+  {% endif %} {% endfor %} {% endif %} {{ message }} {% if dismissible %}
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+  {% endif %}
+</div>

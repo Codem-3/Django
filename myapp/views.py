@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseServerEr
 from django.views.decorators.csrf import csrf_protect
 from django.middleware.csrf import get_token
 from django.contrib import messages
+from django.utils import timezone
+from datetime import datetime, timedelta
 from .forms import InputForm
 from .models import Contact
 
@@ -690,3 +692,124 @@ def name(request, name):
     </html>
     """
     )
+
+
+def template_features_demo(request):
+    """
+    View to demonstrate various Django template features with sample data
+    """
+    # Create sample categories with items for nested loops
+    categories = [
+        {
+            "name": "Technology",
+            "items": ["Laptops", "Smartphones", "Tablets", "Smart Watches"],
+        },
+        {"name": "Books", "items": ["Fiction", "Non-Fiction", "Biography", "Science"]},
+        {"name": "Sports", "items": ["Football", "Basketball", "Tennis", "Swimming"]},
+        {"name": "Music", "items": ["Rock", "Jazz", "Classical", "Pop", "Electronic"]},
+    ]
+
+    # Sample context data demonstrating various template features
+    context = {
+        # Basic variables
+        "demo_title": "Dynamic Template Features Demo",
+        "demo_text": "This text demonstrates Django template filters and variables",
+        "demo_status": "active",
+        "long_text": "This is a very long text that will be used to demonstrate text truncation filters and other text manipulation features available in Django templates. It contains multiple sentences to show how truncatewords filter works.",
+        # Numeric variables
+        "count": 15,
+        "price": 99.99,
+        # List for demonstrating loops
+        "sample_list": [
+            "Apple",
+            "Banana",
+            "Cherry",
+            "Date",
+            "Elderberry",
+            "Fig",
+            "Grape",
+        ],
+        # Categories for nested loops
+        "categories": categories,
+        # Time variables
+        "current_time": timezone.now(),
+        "future_time": timezone.now() + timedelta(days=7, hours=3, minutes=30),
+        # HTML content (for safe filter demo)
+        "html_content": '<strong>Bold text</strong> with <em>emphasis</em> and a <a href="#">link</a>',
+        # User data simulation
+        "user_data": {
+            "role": "administrator",
+            "preferences": {"theme": "dark", "language": "en"},
+        },
+        # Empty variables for default filter demo
+        "empty_var": "",
+        # Search term for URL demo
+        "search_term": "django templates",
+        # Additional demo data
+        "products": [
+            {
+                "name": "Laptop Pro",
+                "price": 1299.99,
+                "category": "Electronics",
+                "in_stock": True,
+                "rating": 4.5,
+            },
+            {
+                "name": "Smartphone X",
+                "price": 899.00,
+                "category": "Electronics",
+                "in_stock": False,
+                "rating": 4.2,
+            },
+            {
+                "name": "Desk Chair",
+                "price": 199.50,
+                "category": "Furniture",
+                "in_stock": True,
+                "rating": 3.8,
+            },
+        ],
+        # Status options for conditional demo
+        "user_permissions": {
+            "can_edit": True,
+            "can_delete": False,
+            "is_admin": True,
+        },
+        # Sample blog posts for complex template demo
+        "blog_posts": [
+            {
+                "title": "Getting Started with Django Templates",
+                "author": "John Doe",
+                "published_date": timezone.now() - timedelta(days=5),
+                "content": "Django templates provide a powerful way to generate HTML dynamically...",
+                "tags": ["Django", "Templates", "Web Development"],
+                "view_count": 1250,
+                "is_featured": True,
+            },
+            {
+                "title": "Advanced Template Inheritance",
+                "author": "Jane Smith",
+                "published_date": timezone.now() - timedelta(days=12),
+                "content": "Template inheritance is one of the most powerful features of Django...",
+                "tags": ["Django", "Advanced", "Inheritance"],
+                "view_count": 892,
+                "is_featured": False,
+            },
+        ],
+    }
+
+    return render(request, "template_features_demo.html", context)
+
+
+def custom_template_tags_demo(request):
+    """
+    View to demonstrate custom template tags and filters
+    """
+    context = {
+        "title": "Custom Template Tags & Filters Demo",
+        "sample_numbers": [10, 25, 50, 75, 100],
+        "sample_prices": [19.99, 49.99, 99.99, 199.99],
+        "sample_text": "hello world from django templates",
+        "markdown_content": "# This is a heading\n\nThis is **bold** text with *italic* elements.",
+    }
+    return render(request, "custom_tags_demo.html", context)

@@ -1,0 +1,453 @@
+{% extends 'base.html' %} {% block title %}Custom Template Tags & Filters - {{
+block.super }}{% endblock %} {% block page_title %}Custom Template Tags &
+Filters{% endblock %} {% block page_description %}Learn how to create and use
+custom template tags and filters in Django{% endblock %} {% block
+breadcrumb_items %}
+<li class="breadcrumb-item active">Custom Tags & Filters</li>
+{% endblock %} {% block extra_nav %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'template_features_demo' %}"
+    >Template Features</a
+  >
+</li>
+{% endblock %} {% block content %}
+
+<!-- Introduction Section -->
+<div class="alert alert-info mb-4">
+  <h4><i class="fas fa-info-circle"></i> Custom Template Tags & Filters</h4>
+  <p class="mb-0">
+    This page demonstrates how to create and use custom template tags and
+    filters. The examples show the code structure and usage patterns.
+  </p>
+</div>
+
+<!-- Custom Filters Section -->
+<div class="template-example mb-5">
+  <h2>1. Custom Template Filters</h2>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5>Creating Custom Filters</h5>
+    </div>
+    <div class="card-body">
+      <p>
+        Custom filters are created in a separate Python file within your app's
+        <code>templatetags</code> directory.
+      </p>
+
+      <div class="row">
+        <div class="col-md-6">
+          <h6>1. File Structure</h6>
+          <div class="code-snippet">
+            <pre><code>myapp/
+├── templatetags/
+│   ├── __init__.py
+│   └── custom_filters.py
+└── templates/</code></pre>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h6>2. Loading in Templates</h6>
+          <div class="code-snippet">
+            <code
+              >{% verbatim %}{% load custom_filters %}{% endverbatim %}</code
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5>Example Custom Filters</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Python Code (custom_filters.py)</h6>
+          <div class="code-snippet">
+            <pre><code>from django import template
+
+register = template.Library()
+
+@register.filter
+def multiply(value, arg):
+    """Multiply value by argument"""
+    try:
+        return float(value) * float(arg)
+    except (ValueError, TypeError):
+        return 0
+
+@register.filter 
+def currency(value):
+    """Format number as currency"""
+    try:
+        return f"${float(value):,.2f}"
+    except (ValueError, TypeError):
+        return "$0.00"
+
+@register.filter
+def truncate_chars(value, length):
+    """Truncate string to specific character length"""
+    if len(value) > length:
+        return value[:length] + "..."
+    return value</code></pre>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h6>Template Usage Examples</h6>
+          <div class="code-snippet">
+            <pre><code>{% verbatim %}<!-- Load the custom filters -->
+{% load custom_filters %}
+
+<!-- Use the filters -->
+{{ price|multiply:1.2|currency }}
+{{ long_text|truncate_chars:50 }}
+{{ total|currency }}{% endverbatim %}</code></pre>
+          </div>
+
+          <h6 class="mt-3">Live Examples</h6>
+          <ul class="list-unstyled">
+            {% comment %}
+            <!-- These would work if custom_filters.py was implemented -->
+            {% load custom_filters %}
+            <li>
+              <strong>Multiply & Currency:</strong> {{
+              sample_prices.0|multiply:1.2|currency }}
+            </li>
+            <li>
+              <strong>Truncate:</strong> {{ sample_text|truncate_chars:20 }}
+            </li>
+            {% endcomment %}
+            <li><strong>Example Result 1:</strong> $23.99 (19.99 × 1.2)</li>
+            <li>
+              <strong>Example Result 2:</strong> "hello world from..."
+              (truncated)
+            </li>
+            <li>
+              <em class="text-muted"
+                >Note: Custom filters require implementation in
+                templatetags/custom_filters.py</em
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Tags Section -->
+<div class="template-example mb-5">
+  <h2>2. Custom Template Tags</h2>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5>Simple Tags</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Python Implementation</h6>
+          <div class="code-snippet">
+            <pre><code>@register.simple_tag
+def current_time(format_string):
+    """Return current time in specified format"""
+    from django.utils import timezone
+    return timezone.now().strftime(format_string)
+
+@register.simple_tag
+def random_number(min_val=1, max_val=100):
+    """Generate random number in range"""
+    import random
+    return random.randint(min_val, max_val)
+
+@register.simple_tag
+def multiply_values(val1, val2):
+    """Multiply two values"""
+    try:
+        return float(val1) * float(val2)
+    except (ValueError, TypeError):
+        return 0</code></pre>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h6>Template Usage</h6>
+          <div class="code-snippet">
+            <pre><code>{% verbatim %}{% load custom_filters %}
+
+<!-- Simple tag usage -->
+{% current_time "%Y-%m-%d %H:%M:%S" %}
+{% random_number 1 10 %}
+{% multiply_values 5 3 %}
+
+<!-- Assign to variable -->
+{% current_time "%Y" as current_year %}
+<p>Copyright {{ current_year }}</p>{% endverbatim %}</code></pre>
+          </div>
+
+          <h6 class="mt-3">Example Results</h6>
+          <ul class="list-unstyled">
+            <li><strong>Current time:</strong> {% now "Y-m-d H:i:s" %}</li>
+            <li><strong>Random number:</strong> 7 (example)</li>
+            <li><strong>Multiplication:</strong> 15 (5 × 3)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5>Inclusion Tags</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Python Implementation</h6>
+          <div class="code-snippet">
+            <pre><code>@register.inclusion_tag('_card_template.html')
+def render_card(title, content, card_type='info'):
+    """Render a bootstrap card with custom content"""
+    return {
+        'title': title,
+        'content': content,
+        'card_type': card_type,
+        'timestamp': timezone.now()
+    }
+
+@register.inclusion_tag('_user_avatar.html')
+def user_avatar(user, size='md'):
+    """Render user avatar component"""
+    sizes = {
+        'sm': '32px',
+        'md': '48px', 
+        'lg': '64px'
+    }
+    return {
+        'user': user,
+        'size': sizes.get(size, '48px'),
+        'initials': f"{user.first_name[0]}{user.last_name[0]}" if hasattr(user, 'first_name') else 'U'
+    }</code></pre>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h6>Template Usage</h6>
+          <div class="code-snippet">
+            <pre><code>{% verbatim %}{% load custom_filters %}
+
+<!-- Inclusion tag usage -->
+{% render_card "Welcome" "This is card content" "success" %}
+
+{% render_card "Warning" "Important notice" "warning" %}
+
+{% user_avatar user "lg" %}{% endverbatim %}</code></pre>
+          </div>
+
+          <h6 class="mt-3">What This Creates</h6>
+          <p class="text-muted">
+            Inclusion tags render complete HTML components with the provided
+            data, making it easy to reuse complex UI elements.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Advanced Tags Section -->
+<div class="template-example mb-5">
+  <h2>3. Advanced Custom Tags</h2>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5>Assignment Tags & Block Tags</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Assignment Tag Example</h6>
+          <div class="code-snippet">
+            <pre><code>@register.simple_tag
+def get_popular_posts(count=5):
+    """Get most popular blog posts"""
+    # This would query your database
+    return BlogPost.objects.filter(
+        is_published=True
+    ).order_by('-view_count')[:count]</code></pre>
+          </div>
+
+          <h6 class="mt-3">Block Tag Example</h6>
+          <div class="code-snippet">
+            <pre><code>@register.tag
+def cache_expensive_operation(parser, token):
+    """Custom caching block tag"""
+    nodelist = parser.parse(('endcache_expensive',))
+    parser.delete_first_token()
+    return CacheNode(nodelist)
+
+class CacheNode(template.Node):
+    def __init__(self, nodelist):
+        self.nodelist = nodelist
+        
+    def render(self, context):
+        # Custom caching logic here
+        return self.nodelist.render(context)</code></pre>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h6>Template Usage</h6>
+          <div class="code-snippet">
+            <pre><code>{% verbatim %}<!-- Assignment tag -->
+{% get_popular_posts 3 as popular %}
+{% for post in popular %}
+    <h5>{{ post.title }}</h5>
+{% endfor %}
+
+<!-- Block tag -->
+{% cache_expensive_operation %}
+    <!-- Expensive template operations -->
+    {% for item in large_dataset %}
+        {{ item.complex_calculation }}
+    {% endfor %}
+{% endcache_expensive %}{% endverbatim %}</code></pre>
+          </div>
+
+          <h6 class="mt-3">Benefits</h6>
+          <ul>
+            <li>
+              <strong>Assignment tags:</strong> Store complex query results
+            </li>
+            <li><strong>Block tags:</strong> Wrap content with custom logic</li>
+            <li><strong>Reusability:</strong> Use across multiple templates</li>
+            <li><strong>Performance:</strong> Move heavy logic from views</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Best Practices Section -->
+<div class="template-example mb-5">
+  <h2>4. Best Practices</h2>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0"><i class="fas fa-check"></i> Do's</h5>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Keep filters simple and focused</li>
+            <li>Handle exceptions gracefully</li>
+            <li>Use descriptive names</li>
+            <li>Document your custom tags</li>
+            <li>Test edge cases thoroughly</li>
+            <li>Use inclusion tags for complex HTML</li>
+            <li>Cache expensive operations</li>
+            <li>Follow Django naming conventions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0"><i class="fas fa-times"></i> Don'ts</h5>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Don't put business logic in templates</li>
+            <li>Don't make database queries in filters</li>
+            <li>Don't ignore error handling</li>
+            <li>Don't create overly complex tags</li>
+            <li>Don't forget to register your tags</li>
+            <li>Don't hardcode values in tags</li>
+            <li>Don't duplicate built-in functionality</li>
+            <li>Don't forget the __init__.py file</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Implementation Steps -->
+<div class="template-example mb-5">
+  <h2>5. Implementation Steps</h2>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-8">
+          <ol class="list-group list-group-numbered">
+            <li class="list-group-item">
+              <strong>Create templatetags directory:</strong>
+              <code>mkdir myapp/templatetags</code>
+            </li>
+            <li class="list-group-item">
+              <strong>Add __init__.py:</strong>
+              <code>touch myapp/templatetags/__init__.py</code>
+            </li>
+            <li class="list-group-item">
+              <strong>Create custom_filters.py:</strong> Add your custom tags
+              and filters
+            </li>
+            <li class="list-group-item">
+              <strong>Register your library:</strong>
+              <code>register = template.Library()</code>
+            </li>
+            <li class="list-group-item">
+              <strong>Load in templates:</strong>
+              <code
+                >{% verbatim %}{% load custom_filters %}{% endverbatim %}</code
+              >
+            </li>
+            <li class="list-group-item">
+              <strong>Use your tags:</strong> Apply them in your templates
+            </li>
+            <li class="list-group-item">
+              <strong>Test thoroughly:</strong> Verify functionality and edge
+              cases
+            </li>
+          </ol>
+        </div>
+        <div class="col-md-4">
+          <div class="alert alert-light">
+            <h6><i class="fas fa-lightbulb"></i> Pro Tip</h6>
+            <p class="small mb-0">
+              Restart your Django development server after creating new template
+              tags to ensure they're properly loaded.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block extra_css %} {{ block.super }}
+<style>
+  .template-example {
+    border-left: 4px solid #6f42c1;
+    padding-left: 20px;
+  }
+  .code-snippet pre {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 15px;
+    font-size: 0.85em;
+    line-height: 1.4;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .code-snippet code {
+    color: #e83e8c;
+    font-size: 0.9em;
+  }
+</style>
+{% endblock %}

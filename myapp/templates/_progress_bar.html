@@ -1,0 +1,13 @@
+<!-- Progress bar component for custom template tag -->
+<div class="progress mb-3">
+  <div
+    class="progress-bar bg-{{ color }}"
+    role="progressbar"
+    style="width: {{ percentage }}%"
+    aria-valuenow="{{ current }}"
+    aria-valuemin="0"
+    aria-valuemax="{{ total }}"
+  >
+    {% if show_percentage %} {{ percentage }}% {% endif %}
+  </div>
+</div>
